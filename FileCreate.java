@@ -71,7 +71,7 @@ public class FileCreate {
 	          HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
 	        return response.body();
 	      }
-	      catch(Exception e){System.err.println("no work collectHTML");return "";}
+	      catch(Exception e){System.err.println("Request error (check internet)");return "";}
 	    }
 	    /**This method will return the entire html coding of what's in the url parameter given
 	    *String url - the url that you want to collect information from
@@ -183,7 +183,7 @@ public class FileCreate {
 	    /*Collects the stories from the US stations and adds them to the stories HashMap*/
 	    protected static void collectStoriesUS(){
 	      for(String tmp:listUS){
-	        if(links.get(tmp).contains("cnn")){collectStoryCNN(collectHTMLStory(links.get(tmp)),links.get(tmp),tmp);}
+	        if(links.get(tmp).contains(".cnn")){collectStoryCNN(collectHTMLStory(links.get(tmp)),links.get(tmp),tmp);}
 	        if(links.get(tmp).contains(".fox")){collectStoryFOX(collectHTMLStory(links.get(tmp)),links.get(tmp),tmp);}
 	        if(links.get(tmp).contains("cbs")) {collectStoryCBS(collectHTMLStory(links.get(tmp)),links.get(tmp),tmp);}
 	      }
@@ -204,7 +204,7 @@ public class FileCreate {
 	          }
 	          stories.put(title,new StoryDets(uri,"US",desc,title));
 	        }
-	      }catch(Exception e){System.err.println("collectStoryCNN no work");}
+	      }catch(Exception e){System.out.println(uri);System.err.println("collectStoryCNN no work");}
 	    }
 	    /*adds the story for FOX to the stories hashmap*/
 	    protected static void collectStoryFOX(String html,String uri,String title){
@@ -225,7 +225,7 @@ public class FileCreate {
 	    			}
 	    			stories.put(title,new StoryDets(uri,"US",desc,title));
 	    		}
-	    	}catch(Exception e){System.err.println("collectStoryFOX no work");}
+	    	}catch(Exception e){System.out.println(uri);System.err.println("collectStoryFOX no work");}
 	    }
 	    /*adds the story for CBS to the stories hashmap*/
 	    protected static void collectStoryCBS(String html,String uri,String title){
@@ -233,10 +233,17 @@ public class FileCreate {
 	    		String desc="";
 	    		if(uri.contains("/video/")){
 	    			html=html.substring(html.indexOf("html=\"")+5);
-	    			html=html.substring(html.indexOf(">")+2);
-	    			desc+=html.substring(0,html.indexOf("</"));
-	    			System.out.println(desc);
+	    			html=html.substring(html.indexOf(">")+1);
+	    			desc+=html.substring(0,html.indexOf("</")).replaceAll("<[^>]*>", "");
+	    			stories.put(title,new StoryDets(uri,"US",desc,title));
+	    		}else{
+	    			for(int i=0;i<3;i++){
+	    				html=html.substring(html.indexOf("<p>")+3);
+	    				desc+=html.substring(0,html.indexOf("</p>")).replaceAll("<[^>]*>","").replaceAll("&nbsp;","").replaceAll("&ndash;","-").replaceAll("&mdash;","--");
+	    				if(desc.charAt(desc.length()-1)=='"'){desc=desc.substring(0,desc.length()-1);}
+	    			}
+	    			stories.put(title,new StoryDets(uri,"US",desc,title));
 	    		}
-	    	}catch(Exception e){System.err.println("collectStoryCBS no work");}
+	    	}catch(Exception e){System.out.println(uri);System.err.println("collectStoryCBS no work");}
 	    }
 }
