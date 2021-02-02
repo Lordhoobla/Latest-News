@@ -33,7 +33,8 @@ public class FileCreate {
 		    		"https://www.mirror.co.uk/",
 		    		"https://www.cbc.ca/",
 		    		"https://www.ctvnews.ca/",
-		    		"https://www.thestar.com/news/canada.html");
+		    		"https://www.thestar.com/news/canada.html",
+		    		"https://financialpost.com");
 		    try{
 		      for(int i=0;i<webSources.size();i++){
 		        String url=collectHTML(webSources.get(i));
@@ -53,10 +54,11 @@ public class FileCreate {
 		          case 10:addLinksCBC(url);break;
 		          case 11:addLinksCTV(url);break;
 		          case 12:addLinksTorStar(url);break;
+		          case 13:addLinksFinPost(url);break;
 		        }
 		      }
 		      //links.forEach((k,v)->System.out.println(k+"\n"+v+"\n"));
-		      //listCA.forEach(n->System.out.println(n+"\n"+links.get(n)+"\n"));
+		      listCA.forEach(n->System.out.println(n+"\n"+links.get(n)+"\n"));
 		    }catch(Exception e){System.err.println("no work init");}
 		    System.out.println("Complete, check info.txt for information");
 	  }
@@ -329,5 +331,24 @@ public class FileCreate {
 		    		}
 		    	}
 	    	}catch(Exception e){System.err.println("addLinksTorStar no work");}
+	    }
+	    /*Collects the initial html for the Financial Post and adds to the listCA and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksFinPost(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<main"));
+	    		html=html.substring(html.indexOf("<article")+2);
+	    		html=html.substring(html.indexOf("<article"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("<h3")-150);
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri="https://financialpost.com"+html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf("<h3"));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</h3")).replaceAll("<[^>]*>","").trim();
+	    			html=html.substring(html.indexOf("<article"));
+	    			listCA.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksFinPost no work");}
 	    }
 }
