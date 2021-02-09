@@ -10,8 +10,14 @@ public class FileCreate {
 	  protected static ArrayList<String> listUS=new ArrayList<String>();
 	  /*holds all of the keys for the UK links*/
 	  protected static ArrayList<String> listUK=new ArrayList<String>();
-	  /*holds all of the keys for the links for the Canadian links*/
+	  /*holds all of the keys for the Canadian links*/
 	  protected static ArrayList<String> listCA=new ArrayList<String>();
+	  /*holds all of the keys for the New Zealand/Australian links*/
+	  protected static ArrayList<String> listNZ=new ArrayList<String>();
+	  /*holds all of the keys for the French links*/
+	  protected static ArrayList<String> listFR=new ArrayList<String>();
+	  /*holds all of the keys for the Israeli links*/
+	  protected static ArrayList<String> listIL=new ArrayList<String>();
 	  /*holds all of the headlines with the links to them <headline><link>*/
 	  protected static HashMap<String,String> links=new HashMap<String,String>();
 	  /*holds all of the web sources that will be used in the program*/
@@ -34,38 +40,77 @@ public class FileCreate {
 		    		"https://www.cbc.ca/",
 		    		"https://www.ctvnews.ca/",
 		    		"https://www.thestar.com/news/canada.html",
-		    		"https://financialpost.com");
+		    		"https://financialpost.com",
+		    		"https://nationalpost.com/category/news/canada/",
+		    		"https://www.stuff.co.nz/",
+		    		"http://www.thecivilian.co.nz/",
+		    		"https://www.9news.com.au/",
+		    		"https://www.smh.com.au/",
+		    		"https://www.theage.com.au/",
+		    		"https://www.centre-presse.fr/",
+		    		"https://www.clicanoo.re/",
+		    		"https://www.lemonde.fr/",
+		    		"https://www.francesoir.fr/",
+		    		"https://www.estrepublicain.fr/",
+		    		"https://www.timesofisrael.com/",
+		    		"https://en.globes.co.il/en/",
+		    		"https://www.jpost.com/",
+		    		"https://www.haaretz.com/",
+		    		"https://israelinewslive.org/");
 		    try{
+		    	String country="United States";
 		      for(int i=0;i<webSources.size();i++){
 		        String url=collectHTML(webSources.get(i));
+		        Main.progress(i*100/webSources.size(),country,true);
 		        switch(i){
 		          case 0:addLinksCNN(url);break;
 		          case 1:addLinksFOX(url);break;
 		          case 2:addLinksCBS(url);break;
 		          case 3:addLinksNYT(url);break;
-		          case 4:addLinksABC(url);break;
-		          //change the loading bar for case 5
+		          case 4:addLinksABC(url);country="United Kingdom";break;
+		          //UK
 		          case 5:addLinksBBC(url);break;
 		          case 6:addLinksTEL(url);break;
 		          case 7:addLinksGUA(url);break;
 		          case 8:addLinksTDM(url);break;
-		          case 9:addLinksTMR(url);break;
-		          //change the loading bar for case 10
+		          case 9:addLinksTMR(url);country="Canada";break;
+		          //CA
 		          case 10:addLinksCBC(url);break;
 		          case 11:addLinksCTV(url);break;
 		          case 12:addLinksTorStar(url);break;
 		          case 13:addLinksFinPost(url);break;
+		          case 14:addLinksNatPost(url);country="New Zealand/Australia";break;
+		          //NZ/AU
+		          case 15:addLinksSTU(url);break;
+		          case 16:addLinksTCV(url);break;
+		          case 17:addLinksNNews(url);break;
+		          case 18:addLinksSMH(url);break;
+		          case 19:addLinksAGE(url);country="France";break;
+		          //FR
+		          case 20:addLinksCentPre(url);break;
+		          case 21:addLinksClic(url);break;
+		          case 22:addLinksLeM(url);break;
+		          case 23:addLinksFrSo(url);break;
+		          case 24:addLinksESTR(url);country="Israel";break;
+		          //IS
+		          case 25:addLinksTOI(url);break;
+		          case 26:addLinksGLO(url);break;
+		          case 27:addLinksJPOst(url);break;
+		          case 28:addLinksHAAre(url);break;
+		          case 29:addLinksISRNews(url);break;
 		        }
 		      }
-		      //links.forEach((k,v)->System.out.println(k+"\n"+v+"\n"));
-		      listCA.forEach(n->System.out.println(n+"\n"+links.get(n)+"\n"));
+		      //addLinksTOI(collectHTML(webSources.get(25)));
+		      Main.progress(100,"Setting up feed",false);
+		      links.forEach((k,v)->System.out.println(k+"\n"+v+"\n"));
+		      //listIL.forEach(n->System.out.println(n+"\n"+links.get(n)+"\n"));
 		    }catch(Exception e){System.err.println("no work init");}
 		    System.out.println("Complete, check info.txt for information");
 	  }
 	   /**This method will return the entire html coding of what's in the url parameter given
 	    *String url - the url that you want to collect information from
 	    */
-	    protected static String collectHTML(String url){
+	    private static String collectHTML(String url){
 	      try{
 	        HttpClient client=HttpClient.newHttpClient();
 	        HttpRequest request=HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
@@ -94,6 +139,7 @@ public class FileCreate {
 	          html=html.substring(html.indexOf("headline")+11);
 	          String title=html.substring(0,html.indexOf("\"")).trim();
 	          title=title.replaceAll("<[^>]*>","");
+	        while(title.contains("strong>")){title=title.substring(0,title.indexOf("\\"))+title.substring(title.indexOf(">")+1);}
 	          listUS.add(title);
 	          links.put(title,uri);
 	          i++;
@@ -280,7 +326,7 @@ public class FileCreate {
 	    protected static void addLinksCBC(String html){
 	    	try{
 		    	html=html.substring(html.indexOf("<main"));
-		    	for(int i=0;i<5;i++){
+		    	for(int i=0;i<6;i++){
 		    		html=html.substring(html.indexOf("<a class"));
 		    		html=html.substring(html.indexOf("href")+6);
 		    		String uri="https://www.cbc.ca"+html.substring(0,html.indexOf("\""));
@@ -299,7 +345,7 @@ public class FileCreate {
 	    protected static void addLinksCTV(String html){
 	    	try{
 		    	html=html.substring(html.indexOf("<body"));
-		    	for(int i=0;i<5;i++){
+		    	for(int i=0;i<7;i++){
 		    		html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href")+6);
 		    		String uri=html.substring(0,html.indexOf("\""));
@@ -318,7 +364,7 @@ public class FileCreate {
 	    protected static void addLinksTorStar(String html){
 	    	try{
 		    	html=html.substring(html.indexOf("</header"));
-		    	for(int i=0;i<5;i++){
+		    	for(int i=0;i<6;i++){
 		    		html=html.substring(html.indexOf("<a")+9);
 		    		String uri="https://www.thestar.com"+html.substring(0,html.indexOf("\""));
 		    		html=html.substring(html.indexOf("<h3"));
@@ -338,7 +384,7 @@ public class FileCreate {
 	    		html=html.substring(html.indexOf("<main"));
 	    		html=html.substring(html.indexOf("<article")+2);
 	    		html=html.substring(html.indexOf("<article"));
-	    		for(int i=0;i<5;i++){
+	    		for(int i=0;i<6;i++){
 	    			html=html.substring(html.indexOf("<h3")-150);
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://financialpost.com"+html.substring(0,html.indexOf("\""));
@@ -350,5 +396,323 @@ public class FileCreate {
 	    			links.put(title,uri);
 	    		}
 	    	}catch(Exception e){System.err.println("addLinksFinPost no work");}
+	    }
+	    /*Collects the initial html for the National Post and adds to the listCA and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksNatPost(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<main"));
+	    		html=html.substring(html.indexOf("<h2")-150);
+	    		html=html.substring(html.indexOf("href")+6);
+	    		String uri="https://nationalpost.com"+html.substring(0,html.indexOf("\""));
+	    		html=html.substring(html.indexOf("<h2"));
+	    		html=html.substring(html.indexOf(">")+1);
+	    		String title=html.substring(0,html.indexOf("</h2")).replaceAll("<[^>]*>","").trim();
+	    		html=html.substring(html.indexOf("<article"));
+	    		listCA.add(title);
+	    		links.put(title,uri);
+	    		for(int i=0;i<7;i++){
+	    			html=html.substring(html.indexOf("<h3")-150);
+		    		html=html.substring(html.indexOf("href")+6);
+		    		uri="https://nationalpost.com"+html.substring(0,html.indexOf("\""));
+		    		html=html.substring(html.indexOf("<h3"));
+		    		html=html.substring(html.indexOf(">")+1);
+		    		title=html.substring(0,html.indexOf("</h3")).replaceAll("<[^>]*>","").trim();
+		    		listCA.add(title);
+		    		links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksNatPost no work");}
+	    }
+	    /*
+	     * NEWS FROM AUSTRALIA/NEW ZEALAND
+	     */
+	    /*Collects the initial html for the Stuff.co.nz and adds to the listNZ and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksSTU(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<body"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("<a _ngcontent"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri="https://www.stuff.co.nz"+html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf("<h3"));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</h3")).replaceAll("<[^>]*>","").trim();
+	    			html=html.substring(html.indexOf("</article"));
+	    			listNZ.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksSTU no work");}
+	    }
+	    /*Collects the initial html for The Civilian and adds to the listNZ and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksTCV(String html){
+	    	try{
+	    		String uri,title;
+	    		html=html.substring(html.indexOf("<tr"));
+	    		for(int i=0;i<2;i++){
+	    			html=html.substring(html.indexOf("<a")+9);
+	    			uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf("<h2")+4);
+	    			title=html.substring(0,html.indexOf("<"));
+	    			listNZ.add(title);
+	    			links.put(title,uri);
+	    		}
+	    		for(int i=0;i<3;i++){
+	    			html=html.substring(html.indexOf("post-content"));
+	    			html=html.substring(html.indexOf("<a")+9);
+	    			uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			title=html.substring(0,html.indexOf("<"));
+	    			html=html.substring(html.indexOf("class"));
+	    			if(title.isEmpty()){i--;
+	    			}else{
+	    				listNZ.add(title);
+	    				links.put(title,uri);}
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksTCV no work");}
+	    }
+	    /*Collects the initial html for 9news and adds to the listNZ and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksNNews(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("\"content\""));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("<article"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf("<h"));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</h")).replaceAll("<[^>]*>","").replaceAll("&#x27;","'");
+	    			html=html.substring(html.indexOf("</article"));
+	    			listNZ.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksNNews no work");}
+	    }
+	    /*Collects the initial html for The Sydney Morning Herald and adds to the listNZ and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksSMH(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<section"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("<h3"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri="https://www.smh.com.au"+html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("<"));
+	    			html=html.substring(html.indexOf("</h3"));
+	    			if(title.length()<30){
+	    				i--;
+	    			}else{
+	    				listNZ.add(title);
+	    				links.put(title,uri);}
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksSMH no work");}
+	    }
+	    /*Collects the initial html for the AGE and adds to the listNZ and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksAGE(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<section"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("<h3"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri="https://www.theage.com.au"+html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("<"));
+	    			html=html.substring(html.indexOf("</h3"));
+	    			if(title.length()<30){
+	    				i--;
+	    			}else{
+	    				listNZ.add(title);
+	    				links.put(title,uri);}
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksAGE no work");}
+	    }
+	    /*
+	     * NEWS FROM FRANCE
+	     */
+	    /*Collects the initial html for the Centre-press and adds to the listFR and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksCentPre(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<body"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("titre"));
+	    			html=html.substring(html.indexOf("a href")+8);
+	    			String uri="https://www.centre-presse.fr"+html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</")).replaceAll("<[^>]*>","");
+	    			if(!Main.translate("fr","en",title).contains("<")){title=Main.translate("fr","en",title);}
+	    			listFR.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksCentPre no work");}
+	    }
+	    /*Collects the initial html for the Clicacoo and adds to the listFR and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksClic(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<body"));
+		    	html=html.substring(html.indexOf("<h1"));
+		    	html=html.substring(html.indexOf("href")+6);
+		    	String uri="https://www.clicanoo.re"+html.substring(0,html.indexOf("'"));
+		    	html=html.substring(html.indexOf(">")+1);
+		    	String title=html.substring(0,html.indexOf("</")).replaceAll("&#039;","'").replaceAll("&quot;","\"");
+		    	if(!Main.translate("fr","en",title).contains("<")){title=Main.translate("fr","en",title);}
+		    	listFR.add(title);
+		    	links.put(title,uri);
+		    	for(int i=0;i<5;i++){
+			    	html=html.substring(html.indexOf("<h3"));
+			    	html=html.substring(html.indexOf("href")+6);
+			    	uri="https://www.clicanoo.re"+html.substring(0,html.indexOf("'"));
+			    	html=html.substring(html.indexOf(">")+1);
+			    	title=html.substring(0,html.indexOf("</")).replaceAll("&#039;","'").replaceAll("&quot;","\"");
+			    	if(!Main.translate("fr","en",title).contains("<")){title=Main.translate("fr","en",title);}
+			    	listFR.add(title);
+			    	links.put(title,uri);
+		    	}
+	    	}catch(Exception e){System.out.println("addLinksClic no work");}
+	    }
+	    /*Collects the initial html for Le Monde and adds to the listFR and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksLeM(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<main"));
+	    		html=html.substring(html.indexOf("<h1")-200);
+	    		html=html.substring(html.indexOf("href")+6);
+	    		String uri=html.substring(0,html.indexOf("\""));
+	    		html=html.substring(html.indexOf("<h1"));
+	    		html=html.substring(html.indexOf(">")+1);
+	    		String title=html.substring(0,html.indexOf("</")).replaceAll("<[^>]*>","").replaceAll("»","").replaceAll("«","").trim();
+	    		if(!Main.translate("fr","en",title).contains("<")){title=Main.translate("fr","en",title);}
+	    		listFR.add(title);
+	    		links.put(title,uri);
+	    		for(int i=0;i<5;i++){
+		    		html=html.substring(html.indexOf("a href")+8);
+		    		uri=html.substring(0,html.indexOf("\""));
+		    		html=html.substring(html.indexOf("<p "));
+		    		html=html.substring(html.indexOf(">")+1);
+		    		title=html.substring(0,html.indexOf("</")).replaceAll("<[^>]*>","").replaceAll("»","").replaceAll("«","").trim();
+		    		if(!Main.translate("fr","en",title).contains("<")){title=Main.translate("fr","en",title);}
+		    		listFR.add(title);
+		    		links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksLeM no work");}
+	    }
+	    /*Collects the initial html for FranceSoir and adds to the listFR and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksFrSo(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<body"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("field-content"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri="https://www.francesoir.fr"+html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf("</strong>")+21);
+	    			String title=html.substring(0,html.indexOf("<")).trim();
+	    			if(!Main.translate("fr","en",title).contains("<")){title=Main.translate("fr","en",title);}
+	    			if(title.isEmpty()){i--;
+	    			}else{
+	    				listFR.add(title);
+	    				links.put(title,uri);
+	    			}
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksFrSo no work");}
+	    }
+	    /*Collects the initial html for Est Republican and adds to the listFR and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksESTR(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<body"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("<article"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf("<h2"));
+	    			String title=html.substring(0,html.indexOf("</h2")).replaceAll("<[^>]*>","").trim();
+	    			if(!Main.translate("fr","en",title).contains("<")){title=Main.translate("fr","en",title);}
+	    			listFR.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksESTR no work");}
+	    }
+	    /*
+	     * NEWS FROM ISRAEL
+	     */
+	    /*Collects the initial html for the Times of Israel and adds to the listIL and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksTOI(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<section"));
+	    		for(int i=0;i<6;i++){
+	    			html=html.substring(html.indexOf("\"headline\""));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","").trim();
+	    			html=html.substring(html.indexOf("</div"));
+	    			listIL.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksTOI no work");}
+	    }
+	    /*Collects the inital html for the Globes and adds to the listIL and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksGLO(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("\"mainContent\""));
+	    		for(int i=0;i<6;i++){
+	    			html=html.substring(html.indexOf("<b>"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri="https://en.globes.co.il"+html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</a"));
+	    			html=html.substring(html.indexOf("</div"));
+	    			listIL.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksGLO no work");}
+	    }
+	    /*Collects the initial html for the JPost and adds to the listIL and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksJPOst(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("\"one-row"));
+	    		for(int i=0;i<6;i++){
+	    			html=html.substring(html.indexOf("<a href")+9);
+	    			String uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf("<h3"));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</"));
+	    			while(title.contains("&#x2")){title=title.substring(0,title.indexOf("&"))+"'"+title.substring(title.indexOf(";")+1);}
+	    			html=html.substring(html.indexOf("</div"));
+	    			if(!uri.contains("http")){i--;
+	    			}else{
+	    				listIL.add(title);
+		    			links.put(title,uri);}
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksJPOst no work");}
+	    }
+	    /*Collects the initial html for the Haretz and adds to the listIL and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksHAAre(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<main"));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("<a"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","").replaceAll("&#x27;","'").trim();
+	    			html=html.substring(html.indexOf("<div"));
+	    			if(!uri.contains("http")){i--;
+	    			}else{
+	    				listIL.add(title);
+	    				links.put(title,uri);}
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksHAAre no work");}
+	    }
+	    /*Collects the initial html for the Israeli news and adds to the listIL and links to the corresponding titles and links for the titles*/
+	    protected static void addLinksISRNews(String html){
+	    	try{
+	    		html=html.substring(html.indexOf("<main"));
+	    		for(int i=0;i<6;i++){
+	    			html=html.substring(html.indexOf("<h4"));
+	    			html=html.substring(html.indexOf("href")+6);
+	    			String uri=html.substring(0,html.indexOf("\""));
+	    			html=html.substring(html.indexOf(">")+1);
+	    			String title=html.substring(0,html.indexOf("</a"));
+	    			html=html.substring(html.indexOf("<article"));
+	    			listIL.add(title);
+	    			links.put(title,uri);
+	    		}
+	    	}catch(Exception e){System.err.println("addLinksISRNews no work");}
 	    }
 }
