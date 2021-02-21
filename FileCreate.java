@@ -5,6 +5,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.lang.String;
 public class FileCreate {
 	  /*United States*/
 	  protected static ArrayList<String> listUS=new ArrayList<String>();
@@ -51,167 +52,182 @@ public class FileCreate {
 		    		"https://www.foxnews.com/",
 		    		"https://www.cbsnews.com/",
 		    		"https://www.nytimes.com/",
-		    		"",
+		    		"https://abcnews.go.com/",
 		    		"https://www.bbc.com/",
 		    		"https://www.telegraph.co.uk/",
 		    		"https://www.theguardian.com/uk",
 		    		"https://www.dailymail.co.uk/home/index.html",
-		    		"",
+		    		"https://www.mirror.co.uk/",
 		    		"https://www.cbc.ca/",
 		    		"https://www.ctvnews.ca/",
 		    		"https://www.thestar.com/news/canada.html",
 		    		"https://financialpost.com",
-		    		"",
+		    		"https://nationalpost.com/",
 		    		"https://www.stuff.co.nz/",
 		    		"http://www.thecivilian.co.nz/",
 		    		"https://www.9news.com.au/",
 		    		"https://www.smh.com.au/",
-		    		"",
-		    		"https://www.centre-presse.fr/",
+		    		"https://www.theage.com.au/",
+		    		"https://www.centre-presse.fr/index.html",
 		    		"https://www.clicanoo.re/",
 		    		"https://www.lemonde.fr/",
 		    		"https://www.francesoir.fr/",
-		    		"",
+		    		"https://www.estrepublicain.fr/",
 		    		"https://www.timesofisrael.com/",
 		    		"https://en.globes.co.il/en/",
 		    		"https://www.jpost.com/",
-		    		"",
+		    		"https://www.haaretz.com/",
 		    		"https://israelinewslive.org/",
 		    		"https://www.themoscowtimes.com/",
 		    		"https://www.rt.com/russia/",
 		    		"https://english.pravda.ru/",
 		    		"https://tass.com/",
-		    		"",
+		    		"https://sputniknews.com/",
 		    		"https://timesofindia.indiatimes.com/india",
 		    		"https://www.indiatoday.in/",
 		    		"https://www.ndtv.com/",
 		    		"https://zeenews.india.com/",
-		    		"",
+		    		"https://www.hindustantimes.com/",
 		    		"https://www.reuters.com/places/brazil",
 		    		"https://www.nsctotal.com.br/an",
 		    		"https://www.anovademocracia.com.br/",
 		    		"https://riotimesonline.com/",
-		    		"",
+		    		"https://www.aljazeera.com/where/brazil/",
 		    		"https://mexiconewsdaily.com/",
 		    		"https://mexicotoday.com/",
 		    		"http://www.banderasnews.com/headlines/bay.htm",
 		    		"https://cambiodemichoacan.com.mx/",
-		    		"",
+		    		"https://www.elimparcial.com/",
 		    		"https://www.aerztezeitung.de/",
 		    		"https://www.dw.com/en/aachen/t-38437968",
 		    		"https://www.abendzeitung-muenchen.de/",
 		    		"https://www.idowa.de/",
-		    		"",
+		    		"https://remszeitung.de/",
 		    		"https://www.repubblica.it/",
 		    		"https://www.bresciaoggi.it/",
 		    		"https://www.tgcom24.mediaset.it/cronaca/campania/",
 		    		"http://www.gaynews.it/",
-		    		"",
+		    		"https://ilpiccolo.gelocal.it/trieste",
 		    		"https://www.koreatimes.co.kr/www2/index.asp",
 		    		"http://www.arirang.com/News/News_Index.asp",
 		    		"http://www.koreaherald.com/",
 		    		"https://en.yna.co.kr/",
-		    		"",
+		    		"http://www.koreatimesus.com/news/",
 		    		"https://www.japantimes.co.jp/",
 		    		"https://mainichi.jp/english/",
 		    		"http://www.rafu.com/",
 		    		"http://www.asahi.com/ajw/",
-		    		"",
+		    		"https://the-japan-news.com/",
 		    		"https://www.nknews.org/",
 		    		"https://www.newsnow.co.uk/h/World+News/Asia/North+Korea?type=ln",
 		    		"https://www.dailynk.com/english/",
 		    		"https://kcnawatch.org/",
-		    		"",
+		    		"http://english.chosun.com/svc/list_in/list.html?catid=F",
 		    		"http://www.xinhuanet.com/english/",
 		    		"http://www.chinadaily.com.cn/index.html",
 		    		"https://thechinatimes.com/china",
 		    		"https://www.shine.cn/news/",
-		    		"");
+		    		"https://sampan.org/");
 		    try{
 		      String country="Loading: United States";
 		      for(int i=0;i<webSources.size();i++){
-		        String url="";
-		        if(!webSources.get(i).isEmpty()){url=collectHTML(webSources.get(i));}
+		        String url=collectHTML(webSources.get(i));
 		        switch(i){
 		          case 0:addLinksCNN(url);break;
 		          case 1:addLinksFOX(url);break;
 		          case 2:addLinksCBS(url);break;
-		          case 3:addLinksNYT(url);country="Loading: United Kingdom";break;
+		          case 3:addLinksNYT(url);break;
+		          case 4:addLinksABC(url);country="Loading: United Kingdom";break;
 		          //UK
 		          case 5:addLinksBBC(url);break;
 		          case 6:addLinksTEL(url);break;
 		          case 7:addLinksGUA(url);break;
-		          case 8:addLinksTDM(url);country="Loading: Canada";break;
+		          case 8:addLinksTDM(url);break;
+		          case 9:addLinksTMR(url);country="Loading: Canada";break;
 		          //CA
 		          case 10:addLinksCBC(url);break;
 		          case 11:addLinksCTV(url);break;
 		          case 12:addLinksTorStar(url);break;
-		          case 13:addLinksFinPost(url);country="Loading: New Zealand/Australia";break;
+		          case 13:addLinksFinPost(url);break;
+		          case 14:addLinksNatPost(url);country="Loading: New Zealand/Australia";break;
 		          //NZ/AU
 		          case 15:addLinksSTU(url);break;
 		          case 16:addLinksTCV(url);break;
 		          case 17:addLinksNNews(url);break;
-		          case 18:addLinksSMH(url);country="Loading: France";break;
+		          case 18:addLinksSMH(url);break;
+		          case 19:addLinksAGE(url);country="Loading: France";break;
 		          //FR
 		          case 20:addLinksCentPre(url);break;
 		          case 21:addLinksClic(url);break;
 		          case 22:addLinksLeM(url);break;
-		          case 23:addLinksFrSo(url);country="Loading: Israel";break;
+		          case 23:addLinksFrSo(url);break;
+		          case 24:addLinksESTR(url);country="Loading: Israel";break;
 		          //IS
 		          case 25:addLinksTOI(url);break;
 		          case 26:addLinksGLO(url);break;
 		          case 27:addLinksJPOst(url);break;
+		          case 28:addLinksHAAre(url);break;
 		          case 29:addLinksISRNews(url);country="Loading: Russia";break;
 		          //RU
 		          case 30:addLinksTMT(url);break;
 		          case 31:addLinksRTCom(url);break;
 		          case 32:addLinksPRA(url);break;
-		          case 33:addLinksTASS(url);country="Loading: India";break;
+		          case 33:addLinksTASS(url);break;
+		          case 34:addLinksSPUT(url);country="Loading: India";break;
 		          //IN
 		          case 35:addLinksTOIndia(url);break;
 		          case 36:addLinksInTod(url);break;
 		          case 37:addLinksNDTV(url);break;
-		          case 38:addLinksZEE(url);country="Loading: Brazil";break;
+		          case 38:addLinksZEE(url);break;
+		          case 39:addLinksHindus(url);country="Loading: Brazil";break;
 		          //BR
 		          case 40:addLinksRET(url);break;
 		          case 41:addLinksAN(url);break;
 		          case 42:addLinksANO(url);break;
-		          case 43:addLinksTRT(url);country="Loading: Mexico";break;
+		          case 43:addLinksTRT(url);break;
+		          case 44:addLinksALJA(url);country="Loading: Mexico";break;
 		          //ME
 		          case 45:addLinksMND(url);break;
 		          case 46:addLinksMexTod(url);break;
 		          case 47:addLinksBand(url);break;
-		          case 48:addLinksCAM(url);country="Loading: Germany";break;
+		          case 48:addLinksCAM(url);break;
+		          case 49:addLinksElIm(url);country="Loading: Germany";break;
 		          //DE
 		          case 50:addLinksARZ(url);break;
 		          case 51:addLinksAACH(url);break;
 		          case 52:addLinksABEND(url);break;
-		          case 53:addLinksIDOWA(url);country="Loading: Italy";break;
+		          case 53:addLinksIDOWA(url);break;
+		          case 54:addLinksREM(url);country="Loading: Italy";break;
 		          //IT
 		          case 55:addLinksITN(url);break;
 		          case 56:addLinksBRES(url);break;
 		          case 57:addLinksGIO(url);break;
-		          case 58:addLinksGAY(url);country="Loading: South Korea";break;
+		          case 58:addLinksGAY(url);break;
+		          case 59:addLinksIlpi(url);country="Loading: South Korea";break;
 		          //SK
 		          case 60:addLinksTKT(url);break;
 		          case 61:addLinksAIR(url);break;
 		          case 62:addLinksTKH(url);break;
-		          case 63:addLinksYON(url);country="Loading: Japan";break;
+		          case 63:addLinksYON(url);break;
+		          case 64:addLinksKoT(url);country="Loading: Japan";break;
 		          //JP
 		          case 65:addLinksJapT(url);break;
 		          case 66:addLinksMaiN(url);break;
 		          case 67:addLinksRAF(url);break;
-		          case 68:addLinksASahI(url);country="Loading: North Korea";break;
+		          case 68:addLinksASahI(url);break;
+		          case 69:addLinksTJN(url);country="Loading: North Korea";break;
 		          //NK
 		          case 70:addLinksNKN(url);break;
 		          case 71:addLinksNKT(url);break;
 		          case 72:addLinksDNK(url);break;
-		          case 73:addLinksKCNAnk(url);country="Loading: China";break;
+		          case 73:addLinksKCNAnk(url);break;
+		          case 74:addLinksCHO(url);country="Loading: China";break;
 		          //CH
 		          case 75:addLinksXIN(url);break;
 		          case 76:addLinksCHD(url);break;
 		          case 77:addLinksTCT(url);break;
 		          case 78:addLinksShine(url);break;
+		          case 79:addLinksSAM(url);break;
 		        }
 		        Main.progress(i*100/webSources.size(),country,-1);
 		      }
@@ -219,8 +235,8 @@ public class FileCreate {
 		      links.forEach((k,v)->System.out.println(k+"\n"+v+"\n"));
 		    }catch(Exception e){Main.debug.append("no work init\n");e.printStackTrace();
 		    }finally{
-		    	/*addLinksSAM(collectHTML(webSources.get(79)));
-		    	listCH.forEach(n->System.out.println(n+"\n"+links.get(n)+"\n\n"));*/
+		    	/*addLinksCHO(collectHTML(webSources.get(74)));
+		    	listNK.forEach(n->System.out.println(n+"\n"+links.get(n)+"\n\n"));*/
 		    	
 		    	if(!Main.debug.toString().isEmpty()){
 		    		Main.printDebug();
@@ -293,7 +309,7 @@ public class FileCreate {
 		        }
 		        String title=html.substring(0,html.indexOf("<"));
 		        title=title.replaceAll("&#x27;","'").trim();
-		        if(!(title.isEmpty()||uri.isEmpty())){
+		        if(!(title.length()<20||uri.isEmpty())){
 		          listUS.add(title);
 		          links.put(title,uri);
 		          i--;
@@ -323,7 +339,7 @@ public class FileCreate {
 	    protected static void addLinksNYT(String html){
 	    	try{
 		      html=html.substring(html.indexOf("<main"));
-		      for(int i=0;i<3;i++){
+		      for(int i=0;i<5;i++){
 		    	  if(html.contains("\"story-wrapper\"")){
 		    		  html=html.substring(html.indexOf("\"story-wrapper\""));}
 		    	  else if(html.contains("<article")){
@@ -345,7 +361,7 @@ public class FileCreate {
 	    /*ABC*/
 	    protected static void addLinksABC(String html){
 	    	try{
-		      for(int i=0;i<3;i++){
+		      for(int i=0;i<5;i++){
 		        html=html.substring(html.indexOf("caption-wrapper\">"));
 		        html=html.substring(html.indexOf("https"));
 		        String uri=html.substring(0,html.indexOf("\"")).trim();
@@ -365,7 +381,7 @@ public class FileCreate {
 	    protected static void addLinksBBC(String html){
 	    	try{
 		    	html=html.substring(html.indexOf("</h1>"));
-		    	for(int i=0;i<3;i++){
+		    	for(int i=0;i<5;i++){
 		    		 html=html.substring(html.indexOf("aria-hidden")-75);
 		    		 html=html.substring(html.indexOf("href")+6);
 		    		 String uri=html.substring(0,html.indexOf("\""));
@@ -383,7 +399,7 @@ public class FileCreate {
 	    	try{
 		    	html=html.substring(html.indexOf("<body"));
 		    	html=html.substring(html.indexOf("<article"));
-		    	for(int i=0;i<3;i++){
+		    	for(int i=0;i<5;i++){
 		    		html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href=")+6);
 		    		String uri="https://www.telegraph.co.uk"+html.substring(0,html.indexOf("\""));
@@ -409,7 +425,7 @@ public class FileCreate {
 		    	String title=html.substring(0,html.indexOf("</a>")).replaceAll("<[^>]*>","").replaceAll("\"","").replaceAll("&#39;","'").replaceAll("\n"," ").trim();
 		    	listUK.add(title);
 		    	links.put(title,uri);
-		    	for(int i=0;i<3;i++){
+		    	for(int i=0;i<5;i++){
 		    		html=html.substring(html.indexOf("href=")+6);
 		    		uri=html.substring(0,html.indexOf("\""));
 		    		html=html.substring(html.indexOf(">")+1);
@@ -438,7 +454,7 @@ public class FileCreate {
 	    protected static void addLinksTMR(String html){
 	    	try{
 		    	html=html.substring(html.indexOf("<main"));
-		    	for(int i=0;i<3;i++){
+		    	for(int i=0;i<5;i++){
 		    		html=html.substring(html.indexOf("<a class"));
 		    		html=html.substring(html.indexOf("href")+6);
 		    		String uri=html.substring(0,html.indexOf("\""));
@@ -498,7 +514,7 @@ public class FileCreate {
 	    protected static void addLinksTorStar(String html){
 	    	try{
 		    	html=html.substring(html.indexOf("<main"));
-		    	for(int i=0;i<3;i++){
+		    	for(int i=0;i<5;i++){
 		    		html=html.substring(html.indexOf("<a href")+9);
 		    		String uri="https://www.thestar.com"+html.substring(0,html.indexOf("\""));
 		    		html=html.substring(html.indexOf("<h3"));
@@ -561,7 +577,7 @@ public class FileCreate {
 	    protected static void addLinksSTU(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<body"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a _ngcontent"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.stuff.co.nz"+html.substring(0,html.indexOf("\""));
@@ -587,7 +603,7 @@ public class FileCreate {
 	    			listNZ.add(title);
 	    			links.put(title,uri);
 	    		}
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("post-content"));
 	    			html=html.substring(html.indexOf("<a")+9);
 	    			uri=html.substring(0,html.indexOf("\""));
@@ -605,7 +621,7 @@ public class FileCreate {
 	    protected static void addLinksNNews(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"content\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -619,10 +635,10 @@ public class FileCreate {
 	    	}catch(Exception e){Main.debug.append("addLinksNNews no work\n");}
 	    }
 	    /*The Sydney Morning Herald*/
-	    protected static void addLinksSMH(String html){
+	   	protected static void addLinksSMH(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<section"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.smh.com.au"+html.substring(0,html.indexOf("\""));
@@ -641,7 +657,7 @@ public class FileCreate {
 	    protected static void addLinksAGE(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<section"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.theage.com.au"+html.substring(0,html.indexOf("\""));
@@ -662,19 +678,24 @@ public class FileCreate {
 	    /*the Centre-press*/
 	    protected static void addLinksCentPre(String html){
 	    	try{
-	    		html=html.substring(html.indexOf("<body"));
-	    		for(int i=0;i<3;i++){
+	    		html=html.substring(html.indexOf("\"content\""));
+	    		for(int i=0;i<5;i++){
+	    			html=html.substring(html.indexOf("item_article"));
 	    			html=html.substring(html.indexOf("titre"));
-	    			html=html.substring(html.indexOf("a href")+8);
+	    			html=html.substring(html.indexOf("<a href")+9);
 	    			String uri="https://www.centre-presse.fr"+html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf(">")+1);
-	    			String title=html.substring(0,html.indexOf("</")).replaceAll("<[^>]*>","");
-	    			String translate=GoogleTranslate.translate("fr","en",title);
-	    			if(!translate.contains("<")){title=translate;}
-	    			listFR.add(title);
-	    			links.put(title,uri);
+	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","").replaceAll("&apos;","'");
+	    			try{
+		    			String translate=GoogleTranslate.translate("fr","en",title);
+		    			if(!translate.contains("<")){title=translate;}
+	    			}catch(Exception e){Main.debug.append("Check connection 403 for Centre-press\n");}
+	    			if(title.length()<20){i--;}
+	    			else{
+		    			listFR.add(title);
+		    			links.put(title,uri);}
 	    		}
-	    	}catch(Exception e){Main.debug.append("addLinksCentPre no work\n");}
+	    	}catch(Exception e){Main.debug.append("addLinksCentPre no work\n");e.printStackTrace();}
 	    }
 	    /*the Clicacoo*/
 	    protected static void addLinksClic(String html){
@@ -689,7 +710,7 @@ public class FileCreate {
     			if(!translate.contains("<")){title=translate;}
 		    	listFR.add(title);
 		    	links.put(title,uri);
-		    	for(int i=0;i<3;i++){
+		    	for(int i=0;i<5;i++){
 			    	html=html.substring(html.indexOf("<h3"));
 			    	html=html.substring(html.indexOf("href")+6);
 			    	uri="https://www.clicanoo.re"+html.substring(0,html.indexOf("'"));
@@ -738,7 +759,7 @@ public class FileCreate {
 	    protected static void addLinksFrSo(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<body"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("field-content"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.francesoir.fr"+html.substring(0,html.indexOf("\""));
@@ -758,7 +779,7 @@ public class FileCreate {
 	    protected static void addLinksESTR(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<body"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.estrepublicain.fr"+html.substring(0,html.indexOf("\""));
@@ -829,7 +850,7 @@ public class FileCreate {
 	    protected static void addLinksHAAre(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -866,7 +887,7 @@ public class FileCreate {
 	    protected static void addLinksTMT(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"row-flex\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a href")+9);
 	    			String uri=html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf("<h3"));
@@ -884,7 +905,7 @@ public class FileCreate {
 	    protected static void addLinksRTCom(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"media  \""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<strong"));
 	    			html=html.substring(html.indexOf("<a class"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -903,7 +924,7 @@ public class FileCreate {
 	    protected static void addLinksPRA(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"page\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("\"title\""));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -921,7 +942,7 @@ public class FileCreate {
 	    protected static void addLinksTASS(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a class"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://tass.com"+html.substring(0,html.indexOf("\""));
@@ -969,7 +990,7 @@ public class FileCreate {
 	    protected static void addLinksTOIndia(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"top-newslist"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("w_tle"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://timesofindia.indiatimes.com"+html.substring(0,html.indexOf("\""));
@@ -993,7 +1014,7 @@ public class FileCreate {
 	    		html=html.substring(html.indexOf("</div"));
 	    		listIN.add(title);
 	    		links.put(title,uri);
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href")+6);
 		    		uri="https://www.indiatoday.in"+html.substring(0,html.indexOf("\""));
@@ -1020,7 +1041,7 @@ public class FileCreate {
 	    		html.substring(html.indexOf("</div"));
 	    		listIN.add(title);
 	    		links.put(title,uri);
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href")+6);
 		    		uri=html.substring(0,html.indexOf("\""));
@@ -1044,7 +1065,7 @@ public class FileCreate {
 	    		html=html.substring(html.indexOf("</div"));
 	    		listIN.add(title);
 	    		links.put(title,uri);
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href")+6);
 		    		uri="https://zeenews.india.com"+html.substring(0,html.indexOf("\""));
@@ -1060,7 +1081,7 @@ public class FileCreate {
 	    protected static void addLinksHindus(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"container\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.hindustantimes.com"+html.substring(0,html.indexOf("\""));
@@ -1082,7 +1103,7 @@ public class FileCreate {
 	    protected static void addLinksRET(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"group wrap\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("story-content"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.reuters.com"+html.substring(0,html.indexOf("\""));
@@ -1099,7 +1120,7 @@ public class FileCreate {
 	    	try{
 	    		html=html.substring(html.indexOf("<div>"));
 	    		html=html.substring(html.indexOf("<article"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf("<h"));
@@ -1119,7 +1140,7 @@ public class FileCreate {
 	    protected static void addLinksANO(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"body-wrapper\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h4"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.anovademocracia.com.br"+html.substring(0,html.indexOf("\""));
@@ -1137,7 +1158,7 @@ public class FileCreate {
 	    protected static void addLinksTRT(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"td-block-title-wrap\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1153,7 +1174,7 @@ public class FileCreate {
 	    protected static void addLinksALJA(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"root\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.aljazeera.com"+html.substring(0,html.indexOf("\""));
@@ -1173,7 +1194,7 @@ public class FileCreate {
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
 	    		html=html.substring(html.indexOf("</aside"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a href")+9);
 	    			String uri=html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf("<h2"));
@@ -1188,7 +1209,7 @@ public class FileCreate {
 	    /*Mexico Today*/
 	    protected static void addLinksMexTod(String html){
 	    	try{
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("<h3"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -1207,7 +1228,7 @@ public class FileCreate {
 	    	try{
 	    		html=html.substring(html.indexOf("Zone-Heading"));
 	    		html=html.substring(html.indexOf("blat2"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf(">")+1);
@@ -1223,7 +1244,7 @@ public class FileCreate {
 	    protected static void addLinksCAM(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"wpb_wrapper\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1241,7 +1262,7 @@ public class FileCreate {
 	    protected static void addLinksElIm(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"pagebuilder"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h2"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.elimparcial.com"+html.substring(0,html.indexOf("\""));
@@ -1262,7 +1283,7 @@ public class FileCreate {
 	    protected static void addLinksARZ(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("article-top\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h2"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.aerztezeitung.de"+html.substring(0,html.indexOf("\""));
@@ -1280,7 +1301,7 @@ public class FileCreate {
 	    protected static void addLinksAACH(String html) {
 	    	try{
 	    		html=html.substring(html.indexOf("\"bodyMover\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("col1"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.dw.com"+html.substring(0,html.indexOf("\""));
@@ -1297,7 +1318,7 @@ public class FileCreate {
 	    protected static void addLinksABEND(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("<h"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -1318,7 +1339,7 @@ public class FileCreate {
 	    protected static void addLinksIDOWA(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("ressort\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("\"content\""));
 	    			html=html.substring(html.indexOf("<a "));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -1340,7 +1361,7 @@ public class FileCreate {
 	    protected static void addLinksREM(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1361,7 +1382,7 @@ public class FileCreate {
 	    protected static void addLinksITN(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h2"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1379,7 +1400,7 @@ public class FileCreate {
 	    protected static void addLinksBRES(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"teaser-content-wrapper\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("<h2"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -1398,7 +1419,7 @@ public class FileCreate {
 	    protected static void addLinksGIO(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"d\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("<h"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -1417,7 +1438,7 @@ public class FileCreate {
 	    protected static void addLinksGAY(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"jeg_main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("<h"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -1436,7 +1457,7 @@ public class FileCreate {
 	    protected static void addLinksIlpi(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h2"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1457,7 +1478,7 @@ public class FileCreate {
 	    protected static void addLinksTKT(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"main_nav\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("_headline "));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.koreatimes.co.kr"+html.substring(0,html.indexOf("'"));
@@ -1473,7 +1494,7 @@ public class FileCreate {
 	    protected static void addLinksAIR(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<ul"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<li"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1515,7 +1536,7 @@ public class FileCreate {
 	    protected static void addLinksYON(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"main-area\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("tit"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https:"+html.substring(0,html.indexOf("\""));
@@ -1531,7 +1552,7 @@ public class FileCreate {
 	    protected static void addLinksKoT(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"main-home\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("category3-text"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1553,7 +1574,7 @@ public class FileCreate {
 	    	try{
 	    		html=html.substring(html.indexOf("\"main_content\""));
 	    		html=html.substring(html.indexOf("lead_stories"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a "));
 	    			String test=html.substring(0,html.indexOf("</a"));
 	    			if(!test.contains("<p ")){i--;}
@@ -1575,7 +1596,7 @@ public class FileCreate {
 	    	try{
 	    		html=html.substring(html.indexOf("\"main\""));
 	    		html=html.substring(html.indexOf("midashi"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a href")+9);
 	    			String uri="https:"+html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf(">")+1);
@@ -1590,7 +1611,7 @@ public class FileCreate {
 	    protected static void addLinksRAF(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"news-focus\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h2"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1605,7 +1626,7 @@ public class FileCreate {
 	    protected static void addLinksASahI(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"MainInner\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a href")+9);
 	    			String uri=html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf("<p"));
@@ -1630,7 +1651,7 @@ public class FileCreate {
 	    protected static void addLinksTJN(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"content\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://the-japan-news.com"+html.substring(0,html.indexOf("\""));
@@ -1650,7 +1671,7 @@ public class FileCreate {
 	    protected static void addLinksNKN(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"header-main\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1668,7 +1689,7 @@ public class FileCreate {
 	    protected static void addLinksNKT(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("\"hl"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1684,13 +1705,13 @@ public class FileCreate {
 	    protected static void addLinksDNK(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"vc_section\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<a href")+9);
 	    			String uri=html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf("title=\"")+7);
 	    			String title=html.substring(0,html.indexOf("\"")).replaceAll("&#8217;","'");
 	    			html=html.substring(html.indexOf("</a"));
-	    			if(i<3){html=html.substring(html.indexOf("td-module-thumb"));}else{html=html.substring(html.indexOf("td-block-span"));}
+	    			if(i<5){html=html.substring(html.indexOf("td-module-thumb"));}else{html=html.substring(html.indexOf("td-block-span"));}
 	    			if(!uri.contains("http")||listNK.contains(title)){
 	    				i--;
 	    			}else{
@@ -1703,7 +1724,7 @@ public class FileCreate {
 	    protected static void addLinksKCNAnk(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"latest-articles\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("article-desc"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -1721,7 +1742,7 @@ public class FileCreate {
 	    protected static void addLinksCHO(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"list_area\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("\"list_item\""));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="http://english.chosun.com"+html.substring(0,html.indexOf("\""));
@@ -1730,7 +1751,7 @@ public class FileCreate {
 	    			listNK.add(title);
 	    			links.put(title,uri);
 	    		}
-	    	}catch(Exception e){Main.debug.append("addLinksCHO no work\n");}
+	    	}catch(Exception e){Main.debug.append("addLinksCHO no work\n");e.printStackTrace();}
 	    }
 	    /*
 	     * NEWS FROM CHINA
@@ -1739,7 +1760,7 @@ public class FileCreate {
 	    protected static void addLinksXIN(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"focus\""));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("\"tit"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1755,8 +1776,8 @@ public class FileCreate {
 	    protected static void addLinksCHD(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"tMain\""));
-	    		for(int i=0;i<3;i++){
-	    			if(i<3){
+	    		for(int i=0;i<5;i++){
+	    			if(i<5){
 	    				html=html.substring(html.indexOf("<h3"));
 	    			}else{
 	    				html=html.substring(html.indexOf("_blank"));}
@@ -1774,7 +1795,7 @@ public class FileCreate {
 	    protected static void addLinksTCT(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri=html.substring(0,html.indexOf("\""));
@@ -1790,7 +1811,7 @@ public class FileCreate {
 	    protected static void addLinksShine(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("row row-story"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("top-story"));
 	    			html=html.substring(html.indexOf("href")+6);
 	    			String uri="https://www.shine.cn"+html.substring(0,html.indexOf("\""));
@@ -1806,7 +1827,7 @@ public class FileCreate {
 	    protected static void addLinksSAM(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
-	    		for(int i=0;i<3;i++){
+	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<article"));
 	    			html=html.substring(html.indexOf("<h3"));
 	    			html=html.substring(html.indexOf("href")+6);
