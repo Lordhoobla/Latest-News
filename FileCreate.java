@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.lang.String;
+import java.awt.Desktop;
 public class FileCreate {
 	  /*United States*/
 	  protected static ArrayList<String> listUS=new ArrayList<String>();
@@ -40,7 +41,7 @@ public class FileCreate {
 	  /*China*/
 	  protected static ArrayList<String> listCH=new ArrayList<String>();
 	  /*holds all of the headlines with the links to them <headline><link>*/
-	  protected static HashMap<String,String> links=new HashMap<String,String>();
+	  protected static HashMap<String,Story> stories=new HashMap<String,Story>();
 	  /*holds all of the web sources that will be used in the program*/
 	  protected static ArrayList<String> webSources=new ArrayList<String>();
 	  /**all you should need to do is run the init() method and it should handle the rest of what's going on in the program
@@ -232,12 +233,15 @@ public class FileCreate {
 		        Main.progress(i*100/webSources.size(),country,-1);
 		      }
 		      Main.progress(100,"Setting up feed",0);
-		      links.forEach((k,v)->System.out.println(k+"\n"+v+"\n"));
-		    }catch(Exception e){Main.debug.append("no work init\n");e.printStackTrace();
+		      Main.create();
+		      StringBuilder html=new StringBuilder();
+		      stories.forEach((k,v)->html.append(v.getIframe()+"\n"));
+		      Main.writeTo(html.toString());
+		      Desktop desktop=Desktop.getDesktop();
+		      desktop.open(Main.info);
+		      Main.info.deleteOnExit();
+		    }catch(Exception e){Main.debug.append("no work init\n");
 		    }finally{
-		    	/*addLinksCHO(collectHTML(webSources.get(74)));
-		    	listNK.forEach(n->System.out.println(n+"\n"+links.get(n)+"\n\n"));*/
-		    	
 		    	if(!Main.debug.toString().isEmpty()){
 		    		Main.printDebug();
 		    		System.out.println("Complete, check debug.txt for information");}
@@ -246,13 +250,9 @@ public class FileCreate {
 	   /**This method will return the entire html coding of what's in the url parameter given
 	    *@param - String url - the url that you want to collect information from
 	    */
-	    private static String collectHTML(String url){
+	    protected static String collectHTML(String url){
 	      try{
-	        HttpClient client=HttpClient.newHttpClient();
-	        HttpRequest request=HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
-	        HttpResponse<String> response=client.send(request,HttpResponse.BodyHandlers.ofString());
-	        String html=response.body();
-	        return html;
+	        return HttpClient.newHttpClient().send(HttpRequest.newBuilder().uri(URI.create(url)).GET().build(),HttpResponse.BodyHandlers.ofString()).body();
 	      }
 	      catch(Exception e){
 	    	  if(Main.percent==0){Main.percent=100;}
@@ -287,7 +287,7 @@ public class FileCreate {
 	          title=title.replaceAll("<[^>]*>","");
 	        while(title.contains("strong>")){title=title.substring(0,title.indexOf("\\"))+title.substring(title.indexOf(">")+1);}
 	          listUS.add(title);
-	          links.put(title,uri);
+	          stories.put(title,new Story(title,uri,"CNN",Story.getAuthorCNN(collectHTML(uri))));
 	          i++;
 	        }
 	      }catch(Exception e){Main.debug.append("addLinksCNN no work\n");}
@@ -311,7 +311,7 @@ public class FileCreate {
 		        title=title.replaceAll("&#x27;","'").trim();
 		        if(!(title.length()<20||uri.isEmpty())){
 		          listUS.add(title);
-		          links.put(title,uri);
+		          stories.put(title,new Story(title,uri,"Fox News",Story.getAuthorFOX(collectHTML(uri))));
 		          i--;
 		        }
 		        i++;
@@ -331,7 +331,7 @@ public class FileCreate {
 		        if(title.isEmpty()||title.length()<20){i--;}
 		        else{
 		        	listUS.add(title);
-		        	links.put(title,uri);}
+		        	stories.put(title,new Story(title,uri,"CBS News",Story.getAuthorCBS()));}
 		      }
 	    	}catch(Exception e){Main.debug.append("addLinksCBS no work\n");}
 	    }
@@ -354,7 +354,7 @@ public class FileCreate {
 		    	  if(title.contains("›")){i--;}
 		    	  else{
 			    	  listUS.add(title);
-			    	  links.put(title,uri);}
+			    	  stories.put(title,new Story(title,uri,"New York Times",Story.getAuthorNYT(collectHTML(uri))));}
 		      }
 	    	}catch(Exception e){Main.debug.append("addLinksNYT no work\n");}
 	    }
@@ -370,7 +370,7 @@ public class FileCreate {
 		        if(title.isEmpty()){i--;
 		        }else{
 		        	listUS.add(title);
-		        	links.put(title,uri);}
+		        	stories.put(title,new Story(title,uri,"ABC News",Story.getAuthorABC()));}
 		      }
 	    	}catch(Exception e){Main.debug.append("addLinksABC no work\n");}
 	    }
@@ -390,11 +390,11 @@ public class FileCreate {
 		    		 String title=html.substring(0,html.indexOf("\"")).replaceAll("<a class=","").replaceAll("<p class=","").replaceAll("<[^>]*>","").trim();
 		    		 html=html.substring(html.indexOf("<"));
 		    		 listUK.add(title);
-		    		 links.put(title,uri);
+		    		 stories.put(title,new Story(title,uri,"British Broadcasting Corporation",Story.getAuthorBBC()));
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksBBC no work\n");}
 	    }
-	    /*Telegram*/
+	    /*Telegraph*/
 	    protected static void addLinksTEL(String html){
 	    	try{
 		    	html=html.substring(html.indexOf("<body"));
@@ -409,7 +409,7 @@ public class FileCreate {
 		    		title=title.replaceAll("  "," ");
 		    		html=html.substring(html.indexOf("</article")+10);
 		    		listUK.add(title);
-		    		links.put(title,uri);
+		    		stories.put(title,new Story(title,uri,"The Telegraph",Story.getAuthorTEL(collectHTML(uri))));
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksTEL no work\n");}
 	    }
@@ -424,13 +424,13 @@ public class FileCreate {
 		    	html=html.substring(html.indexOf(">")+1);
 		    	String title=html.substring(0,html.indexOf("</a>")).replaceAll("<[^>]*>","").replaceAll("\"","").replaceAll("&#39;","'").replaceAll("\n"," ").trim();
 		    	listUK.add(title);
-		    	links.put(title,uri);
+		    	stories.put(title,new Story(title,uri,"The Guardian",Story.getAuthorGUA(collectHTML(uri))));
 		    	for(int i=0;i<5;i++){
 		    		html=html.substring(html.indexOf("href=")+6);
 		    		uri=html.substring(0,html.indexOf("\""));
 		    		html=html.substring(html.indexOf(">")+1);
 		    		title=html.substring(0,html.indexOf("</a>")).replaceAll("<[^>]*>","").replaceAll("\"","").replaceAll("&#39;","'").replaceAll("\n"," ").trim();
-		    		if(listUK.contains(title)){i--;}else{listUK.add(title);links.put(title,uri);}
+		    		if(listUK.contains(title)){i--;}else{listUK.add(title);stories.put(title,new Story(title,uri,"The Guardian",Story.getAuthorGUA(collectHTML(uri))));}
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksGUA no work\n");}
 	    }
@@ -446,7 +446,7 @@ public class FileCreate {
 		    		String title=html.substring(0,html.indexOf("<"));
 		    		html=html.substring(html.indexOf("<div"));
 		    		listUK.add(title);
-		    		links.put(title,uri);
+		    		stories.put(title,new Story(title,uri,"The Daily Mail",Story.getAuthorTDM(collectHTML(uri))));
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksTDM no work\n");}
 	    }
@@ -460,11 +460,11 @@ public class FileCreate {
 		    		String uri=html.substring(0,html.indexOf("\""));
 		    		html=html.substring(html.indexOf(">")+1);
 		    		String title=html.substring(0,html.indexOf("<"));
-		    		if(title.isEmpty()||!title.contains(" ")||links.containsValue(uri)||uri.contains("all-about")){
+		    		if(title.isEmpty()||!title.contains(" ")||uri.contains("all-about")){
 		    			i--;
 		    		}else{
 		    			listUK.add(title);
-		    			links.put(title,uri);
+		    			stories.put(title,new Story(title,uri,"The Daily Mirror",Story.getAuthorTMR(collectHTML(uri))));
 		    		}
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksTMR no work\n");}
@@ -487,7 +487,7 @@ public class FileCreate {
 		    		if(uri.length()<30){i--;
 		    		}else{
 		    			listCA.add(title);
-		    			links.put(title,uri);}
+		    			stories.put(title,new Story(title,uri,"CBC News",Story.getAuthorCBC()));}
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksCBC no work\n");}
 	    }
@@ -505,7 +505,7 @@ public class FileCreate {
 		    		if(!title.contains(" ")){i--;
 		    		}else{
 		    			listCA.add(title);
-		    			links.put(title,uri);
+		    			stories.put(title,new Story(title,uri,"CTV",Story.getAuthorCTV()));
 		    		}
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksCTV no work\n");}
@@ -522,7 +522,7 @@ public class FileCreate {
 		    		String title=html.substring(0,html.indexOf("</h3")).replaceAll("<[^>]*>","");
 		    		html=html.substring(html.indexOf("</a"));
 		    		listCA.add(title);
-		    		links.put(title,uri);
+		    		stories.put(title,new Story(title,uri,"The Toronto Star",Story.getAuthorTorStar(collectHTML(uri))));
 		    	}
 	    	}catch(Exception e){Main.debug.append("addLinksTorStar no work\n");}
 	    }
@@ -541,7 +541,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</h3")).replaceAll("<[^>]*>","").trim();
 	    			html=html.substring(html.indexOf("<article"));
 	    			listCA.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"The Financial Post",Story.getAuthorFinPost(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksFinPost no work\n");}
 	    }
@@ -557,7 +557,7 @@ public class FileCreate {
 	    		String title=html.substring(0,html.indexOf("</h2")).replaceAll("<[^>]*>","").trim();
 	    		html=html.substring(html.indexOf("<article"));
 	    		listCA.add(title);
-	    		links.put(title,uri);
+	    		stories.put(title,new Story(title,uri,"The National Post",Story.getAuthorNatPost(collectHTML(uri))));
 	    		for(int i=0;i<7;i++){
 	    			html=html.substring(html.indexOf("<h3")-150);
 		    		html=html.substring(html.indexOf("href")+6);
@@ -566,7 +566,7 @@ public class FileCreate {
 		    		html=html.substring(html.indexOf(">")+1);
 		    		title=html.substring(0,html.indexOf("</h3")).replaceAll("<[^>]*>","").trim();
 		    		listCA.add(title);
-		    		links.put(title,uri);
+		    		stories.put(title,new Story(title,uri,"The National Post",Story.getAuthorNatPost(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksNatPost no work\n");}
 	    }
@@ -586,7 +586,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</h3")).replaceAll("<[^>]*>","").trim();
 	    			html=html.substring(html.indexOf("</article"));
 	    			listNZ.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Stuff.co.nz",Story.getAuthorSTU(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksSTU no work\n");}
 	    }
@@ -601,7 +601,7 @@ public class FileCreate {
 	    			html=html.substring(html.indexOf("<h2")+4);
 	    			title=html.substring(0,html.indexOf("<"));
 	    			listNZ.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"The Civilian",Story.getAuthorTCV()));
 	    		}
 	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("post-content"));
@@ -613,7 +613,7 @@ public class FileCreate {
 	    			if(title.isEmpty()){i--;
 	    			}else{
 	    				listNZ.add(title);
-	    				links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"The Civilian",Story.getAuthorTCV()));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTCV no work\n");}
 	    }
@@ -630,7 +630,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</h")).replaceAll("<[^>]*>","").replaceAll("&#x27;","'");
 	    			html=html.substring(html.indexOf("</article"));
 	    			listNZ.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"9News",Story.getAuthorNNews(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksNNews no work\n");}
 	    }
@@ -649,7 +649,7 @@ public class FileCreate {
 	    				i--;
 	    			}else{
 	    				listNZ.add(title);
-	    				links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"The Syndey Morning Herald",Story.getAuthorSMH(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksSMH no work\n");}
 	    }
@@ -668,7 +668,7 @@ public class FileCreate {
 	    				i--;
 	    			}else{
 	    				listNZ.add(title);
-	    				links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"The AGE",Story.getAuthorAGE(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksAGE no work\n");}
 	    }
@@ -693,11 +693,11 @@ public class FileCreate {
 	    			if(title.length()<20){i--;}
 	    			else{
 		    			listFR.add(title);
-		    			links.put(title,uri);}
+		    			stories.put(title,new Story(title,uri,"The Centre-presse",Story.getAuthorCentPre()));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksCentPre no work\n");e.printStackTrace();}
 	    }
-	    /*the Clicacoo*/
+	    /*the Clicanoo*/
 	    protected static void addLinksClic(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<body"));
@@ -709,7 +709,7 @@ public class FileCreate {
 		    	String translate=GoogleTranslate.translate("fr","en",title);
     			if(!translate.contains("<")){title=translate;}
 		    	listFR.add(title);
-		    	links.put(title,uri);
+		    	stories.put(title,new Story(title,uri,"The Clicanoo",Story.getAuthorClic()));
 		    	for(int i=0;i<5;i++){
 			    	html=html.substring(html.indexOf("<h3"));
 			    	html=html.substring(html.indexOf("href")+6);
@@ -719,7 +719,7 @@ public class FileCreate {
 			    	translate=GoogleTranslate.translate("fr","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 			    	listFR.add(title);
-			    	links.put(title,uri);
+			    	stories.put(title,new Story(title,uri,"The Clicanoo",Story.getAuthorClic()));
 		    	}
 	    	}catch(Exception e){System.out.println("addLinksClic no work\n");}
 	    }
@@ -737,7 +737,7 @@ public class FileCreate {
 	    		String translate=GoogleTranslate.translate("fr","en",title);
     			if(!translate.contains("<")){title=translate;}
 	    		listFR.add(title);
-	    		links.put(title,uri);
+	    		stories.put(title,new Story(title,uri,"Le Monde",Story.getAuthorLeM(collectHTML(uri))));
 	    		for(int i=0;i<4;i++){
 	    			html=html.substring(html.indexOf("<a href")+9);
 		    		uri=html.substring(0,html.indexOf("\""));
@@ -750,7 +750,7 @@ public class FileCreate {
 		    		if(title.length()<20||!uri.contains("http")){i--;
 		    		}else{
 		    			listFR.add(title);
-		    			links.put(title,uri);
+		    			stories.put(title,new Story(title,uri,"Le Monde",Story.getAuthorLeM(collectHTML(uri))));
 		    		}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksLeM no work\n");}
@@ -770,7 +770,7 @@ public class FileCreate {
 	    			if(title.isEmpty()){i--;
 	    			}else{
 	    				listFR.add(title);
-	    				links.put(title,uri);
+	    				stories.put(title,new Story(title,uri,"Francesoir",Story.getAuthorFrSo()));
 	    			}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksFrSo no work\n");}
@@ -788,7 +788,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("fr","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listFR.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Est Republican",Story.getAuthorESTR(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksESTR no work\n");}
 	    }
@@ -807,7 +807,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","").trim();
 	    			html=html.substring(html.indexOf("</div"));
 	    			listIL.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Times of Israel",Story.getAuthorTOI(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTOI no work\n");}
 	    }
@@ -823,7 +823,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("</div"));
 	    			listIL.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"The Globes",Story.getAuthorGLO(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksGLO no work\n");}
 	    }
@@ -842,7 +842,7 @@ public class FileCreate {
 	    			if(!uri.contains("http")){i--;
 	    			}else{
 	    				listIL.add(title);
-		    			links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"Jpost",Story.getAuthorJPOst(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksJPOst no work\n");}
 	    }
@@ -860,11 +860,11 @@ public class FileCreate {
 	    			if(!uri.contains("http")){i--;
 	    			}else{
 	    				listIL.add(title);
-	    				links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"Haaretz",Story.getAuthorHAAre(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksHAAre no work\n");}
 	    }
-	    /*the Israeli news*/
+	    /*Israeli news*/
 	    protected static void addLinksISRNews(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("<main"));
@@ -876,7 +876,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("<article"));
 	    			listIL.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Israeli News",Story.getAuthorISRNews(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksISRNews no work\n");}
 	    }
@@ -897,7 +897,7 @@ public class FileCreate {
 	    			if(title.contains("\n")||title.isEmpty()){i--;}
 	    			else{
 	    				listRU.add(title);
-	    				links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"Moscow Times",Story.getAuthorTMT()));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTMT no work\n");}
 	    }
@@ -916,7 +916,7 @@ public class FileCreate {
 	    			if(title.isEmpty()){i--;}
 	    			else{
 	    				listRU.add(title);
-	    				links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"RTCom",Story.getAuthorRTcom()));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksRTCom no work\n");}
 	    }
@@ -933,8 +933,8 @@ public class FileCreate {
 	    			html=html.substring(html.indexOf("</a"));
 	    			if(title.isEmpty()){i--;}
 	    			else{
-	    			listRU.add(title);
-	    			links.put(title,uri);}
+	    				listRU.add(title);
+	    				stories.put(title,new Story(title,uri,"Pravda",Story.getAuthorPRA(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksPRA no work\n");}
 	    }
@@ -954,7 +954,7 @@ public class FileCreate {
 	    			if(title.length()<20){i--;}
 	    			else{
 	    				listRU.add(title);
-	    				links.put(title,uri);}
+	    				stories.put(title,new Story(title,uri,"TASS",Story.getAuthorTASS()));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTASS no work\n");}
 	    }
@@ -969,7 +969,7 @@ public class FileCreate {
 	    		String title=html.substring(0,html.indexOf("</a"));
 	    		html=html.substring(html.indexOf("</a")+1);
 	    		listRU.add(title);
-	    		links.put(title,uri);
+	    		stories.put(title,new Story(title,uri,"Sputnik News",Story.getAuthorSPUT(collectHTML(uri))));
 	    		for(int i=0;i<4;i++){
 	    			html=html.substring(html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("href")+6);
@@ -979,7 +979,7 @@ public class FileCreate {
 	    			while(title.contains("  ")){title=title.replaceAll("  "," ");}
 	    			html=html.substring(html.indexOf("</a")+1);
 	    			listRU.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Sputnik News",Story.getAuthorSPUT(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksSPUT no work\n");}
 	    }
@@ -998,7 +998,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("<li"));
 	    			listIN.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Times of India",Story.getAuthorTOIndia()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTOIndia no work\n");}
 	    }
@@ -1013,7 +1013,7 @@ public class FileCreate {
 	    		String title=html.substring(0,html.indexOf("</a"));
 	    		html=html.substring(html.indexOf("</div"));
 	    		listIN.add(title);
-	    		links.put(title,uri);
+	    		stories.put(title,new Story(title,uri,"India Today",Story.getAuthorInTod(collectHTML(uri))));
 	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href")+6);
@@ -1024,8 +1024,7 @@ public class FileCreate {
 		    		if(title.contains("http")){i--;}
 		    		else{
 		    			listIN.add(title);
-		    			links.put(title,uri);
-		    		}
+		    			stories.put(title,new Story(title,uri,"India Today",Story.getAuthorInTod(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksInTod no work\n");}
 	    }
@@ -1040,7 +1039,7 @@ public class FileCreate {
 	    		String title=html.substring(0,html.indexOf("</a"));
 	    		html.substring(html.indexOf("</div"));
 	    		listIN.add(title);
-	    		links.put(title,uri);
+	    		stories.put(title,new Story(title,uri,"NDTV",Story.getAuthorNDTV(collectHTML(uri))));
 	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href")+6);
@@ -1049,7 +1048,7 @@ public class FileCreate {
 		    		title=html.substring(0,html.indexOf("</a"));
 		    		html.substring(html.indexOf("</div"));
 		    		listIN.add(title);
-		    		links.put(title,uri);
+		    		stories.put(title,new Story(title,uri,"NDTV",Story.getAuthorNDTV(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksNDTV no work\n");}
 	    }
@@ -1064,7 +1063,7 @@ public class FileCreate {
 	    		String title=html.substring(0,html.indexOf("</a")).replaceAll("\n","");
 	    		html=html.substring(html.indexOf("</div"));
 	    		listIN.add(title);
-	    		links.put(title,uri);
+	    		stories.put(title,new Story(title,uri,"Zee News",Story.getAuthorZEE(collectHTML(uri))));
 	    		for(int i=0;i<5;i++){
 	    			html=html.substring(html.indexOf("<h3"));
 		    		html=html.substring(html.indexOf("href")+6);
@@ -1073,7 +1072,7 @@ public class FileCreate {
 		    		title=html.substring(0,html.indexOf("</a")).replaceAll("\n","");
 		    		html=html.substring(html.indexOf("</div"));
 		    		listIN.add(title);
-		    		links.put(title,uri);
+		    		stories.put(title,new Story(title,uri,"Zee News",Story.getAuthorZEE(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksZEE no work\n");}
 	    }
@@ -1091,7 +1090,7 @@ public class FileCreate {
 	    			if(title.contains("/>")){i--;}
 	    			else{
 	    				listIN.add(title);
-	    				links.put(title,uri);
+	    				stories.put(title,new Story(title,uri,"Hindustan times",Story.getAuthorHindus()));
 	    			}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksHindus no work\n");}
@@ -1111,7 +1110,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","").trim();
 	    			html=html.substring(html.indexOf("<article"));
 	    			listBR.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"The Reuters",Story.getAuthorRET(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksRET no work\n");}
 	    }
@@ -1131,7 +1130,7 @@ public class FileCreate {
 	    			if(listBR.contains(title)){i--;}
 	    			else{
 	    				listBR.add(title);
-	    				links.put(title,uri);
+	    				stories.put(title,new Story(title,uri,"Anoticia",Story.getAuthorAN(collectHTML(uri))));
 	    			}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksAN no work\n");}
@@ -1150,7 +1149,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("pt","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listBR.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Anova",Story.getAuthorANO(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksANO no work\n");}
 	    }
@@ -1166,7 +1165,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("&#8211;","-").replaceAll("&#8217;","'");
 	    			html=html.substring(html.indexOf("td"));
 	    			listBR.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"The Rio Times",Story.getAuthorTRT(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addlinksTRT no work\n");}
 	    }
@@ -1182,7 +1181,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","");
 	    			html=html.substring(html.indexOf("</article"));
 	    			listBR.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Aljazeera",Story.getAuthorALJA(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksALJA no work\n");}
 	    }
@@ -1202,7 +1201,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</h2"));
 	    			html=html.substring(html.indexOf("<li"));
 	    			listME.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Mexico News Daily",Story.getAuthorMND(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksMND no work\n");}
 	    }
@@ -1218,7 +1217,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("&#8217;","'");
 	    			html=html.substring(html.indexOf("</article"));
 	    			listME.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Mexico Today",Story.getAuthorMexTod()));
 	    			
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksMexTod no work\n");}
@@ -1236,7 +1235,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</"));
 	    			html=html.substring(html.indexOf("<BR"));
 	    			listME.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Banderas News",Story.getAuthorBand(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksBand no work\n");}
 	    }
@@ -1254,7 +1253,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("es","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listME.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Cambio de Michogcan",Story.getAuthorCAM(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksCAM no work\n");}
 	    }
@@ -1272,7 +1271,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("es","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listME.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"El Imparcial",Story.getAuthorElIm(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksElIm no work\n");}
 	    }
@@ -1293,7 +1292,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("de","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listDE.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Arzte Zeitung",Story.getAuthorARZ(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksARZ no work\n");}
 	    }
@@ -1310,9 +1309,9 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</h2")).replaceAll("<[^>]*>","").replaceAll("\n","");
 	    			html=html.substring(html.indexOf("</a"));
 	    			listDE.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Aachen",Story.getAuthorAACH(collectHTML(uri))));
 	    		}
-	    	}catch(Exception e){Main.debug.append("addLinksAACH");}
+	    	}catch(Exception e){Main.debug.append("addLinksAACH no work\n");}
 	    }
 	    /*Abendzeitung*/
 	    protected static void addLinksABEND(String html){
@@ -1331,7 +1330,7 @@ public class FileCreate {
 	    			if(listDE.contains(title)){i--;}
 	    			else{
 	    				listDE.add(title);
-	    				links.put(title,uri);	    			}
+	    				stories.put(title,new Story(title,uri,"Abendzeitung",Story.getAuthorABEND()));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksABEND no work\n");}
 	    }
@@ -1343,7 +1342,7 @@ public class FileCreate {
 	    			html=html.substring(html.indexOf("\"content\""));
 	    			html=html.substring(html.indexOf("<a "));
 	    			html=html.substring(html.indexOf("href")+6);
-	    			String uri=html.substring(0,html.indexOf("\""));
+	    			String uri="https://www.idowa.de"+html.substring(0,html.indexOf("\""));
 	    			html=html.substring(html.indexOf("<h"));
 	    			html=html.substring(html.indexOf(">")+1);
 	    			String title=html.substring(0,html.indexOf("</h")).replaceAll("<[^>]*>","").replaceAll("\t","");
@@ -1353,7 +1352,7 @@ public class FileCreate {
 	    			if(uri.equals("#")){i--;}
 	    			else{
 		    			listDE.add(title);
-		    			links.put(title,"https://www.idowa.de"+uri);}
+		    			stories.put(title,new Story(title,uri,"Idowa",Story.getAuthorIDOWA(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksIDOWA no work\n");}
 	    }
@@ -1371,7 +1370,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("de","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listDE.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Remszeitung",Story.getAuthorREM(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksREM no work\n");}
 	    }
@@ -1392,7 +1391,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("it","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listIT.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"ItalyNews.net",Story.getAuthorITN(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksITN no work\n");}
 	    }
@@ -1411,7 +1410,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("it","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listIT.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Bresciaggi",Story.getAuthorBRES()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksBRES no work\n");}
 	    }
@@ -1430,7 +1429,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("it","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listIT.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Giornale Compania",Story.getAuthorGIO()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksGIO no work\n");}
 	    }
@@ -1449,7 +1448,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("it","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listIT.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Gay News",Story.getAuthorGAY(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksGAY no work\n");}
 	    }
@@ -1467,7 +1466,7 @@ public class FileCreate {
 	    			String translate=GoogleTranslate.translate("it","en",title);
 	    			if(!translate.contains("<")){title=translate;}
 	    			listIT.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Ilpiccolo",Story.getAuthorIlpi(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksIlpi no work\n");}
 	    }
@@ -1486,7 +1485,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("article"));
 	    			listSK.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Korea Times",Story.getAuthorTKT(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTKT no work\n");}
 	    }
@@ -1507,7 +1506,7 @@ public class FileCreate {
 	    			if(title.length()<20){i--;}
 	    			else{
 	    				listSK.add(title);
-	    				links.put(title,uri);
+	    				stories.put(title,new Story(title,uri,"Arirang",Story.getAuthorAIR(collectHTML(uri))));
 	    			}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksAIR no work\n");}
@@ -1527,7 +1526,7 @@ public class FileCreate {
 	    			if(uri.contains(".css")||uri.charAt(uri.length()-1)==';'){i--;}
 	    			else{
 	    				listSK.add(title);
-	    				links.put(title,uri);
+	    				stories.put(title,new Story(title,uri,"The Korean Herald",Story.getAuthorTKH(collectHTML(uri))));
 	    			}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTKH no work\n");}
@@ -1544,7 +1543,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).trim();
 	    			html=html.substring(html.indexOf("<article"));
 	    			listSK.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Yonhap News Agency",Story.getAuthorYON()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksYON no work\n");}
 	    }
@@ -1562,7 +1561,7 @@ public class FileCreate {
 	    			if(title.contains("LEAD")){title=title.substring(title.indexOf(" ")+1);}
 	    			html=html.substring(html.indexOf("<li"));
 	    			listSK.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Korea Times News",Story.getAuthorKoT()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksKoT no work\n");}
 	    }
@@ -1585,7 +1584,7 @@ public class FileCreate {
 		    			html=html.substring(html.indexOf(">")+1);
 		    			String title=html.substring(0,html.indexOf("</p")).trim().replaceAll("<[^>]*>","");
 		    			listJP.add(title);
-		    			links.put(title,uri);
+		    			stories.put(title,new Story(title,uri,"Japan Times",Story.getAuthorJapT(collectHTML(uri))));
 	    			}
 	    			html=html.substring(html.indexOf("</article"));
 	    		}
@@ -1603,11 +1602,11 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","").replaceAll("[\\r\\n]+"," ").trim().replaceAll("   "," ");
 	    			html=html.substring(html.indexOf("<li"));
 	    			listJP.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Mainchi",Story.getAuthorMaiN()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksMaiN no work\n");}
 	    }
-	    /*Japan Today*/
+	    /*RAFU*/
 	    protected static void addLinksRAF(String html){
 	    	try{
 	    		html=html.substring(html.indexOf("\"news-focus\""));
@@ -1618,7 +1617,7 @@ public class FileCreate {
 	    			html=html.substring(html.indexOf(">")+1);
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			listJP.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"RAFU",Story.getAuthorRAF()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksRAF no work\n");}
 	    }
@@ -1642,7 +1641,7 @@ public class FileCreate {
 		    			title=title.replaceAll("<[^>]*>","");
 		    			if(!uri.contains("http")){uri="http://www.asahi.com"+uri;}
 		    			listJP.add(title);
-		    			links.put(title,uri);}
+		    			stories.put(title,new Story(title,uri,"Asahi Shimbun",Story.getAuthorASahI(collectHTML(uri))));}
 	    			html=html.substring(html.indexOf("<li"));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksASahI no work\n");}
@@ -1660,7 +1659,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</h")).replaceAll("<[^>]*>","").replaceAll("[\\r\\n]+"," ").replaceAll("PREMIUM","").trim();
 	    			html=html.substring(html.indexOf("<li"));
 	    			listJP.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"The Japan News",Story.getAuthorTJN()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTJN no work\n");}
 	    }
@@ -1681,7 +1680,7 @@ public class FileCreate {
 	    			if(title.contains("<img")){i--;}
 	    			else{
 		    			listNK.add(title);
-		    			links.put(title,uri);}
+		    			stories.put(title,new Story(title,uri,"NKNews",Story.getAuthorNKN(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksNKN no work\n");}
 	    }
@@ -1697,7 +1696,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("&#8217;","'");
 	    			html=html.substring(html.indexOf("</div"));
 	    			listNK.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"NewsNow North Korea",Story.getAuthorNKT()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksNKT no work\n");}
 	    }
@@ -1716,7 +1715,7 @@ public class FileCreate {
 	    				i--;
 	    			}else{
 		    			listNK.add(title);
-		    			links.put(title,uri);}
+		    			stories.put(title,new Story(title,uri,"Daily North Korea",Story.getAuthorDNK(collectHTML(uri))));}
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksDNK no work\n");}
 	    }
@@ -1733,8 +1732,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("</article"));
 	    			listNK.add(title);
-	    			links.put(title,uri);
-	    			
+	    			stories.put(title,new Story(title,uri,"KCNA Watch North Korea",Story.getAuthorKCNAnk()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksKCNAnk no work\n");}
 	    }
@@ -1749,7 +1747,7 @@ public class FileCreate {
 	    			html=html.substring(html.indexOf(">")+1);
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("&#39;","'");
 	    			listNK.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Chosun.com",Story.getAuthorCHO(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksCHO no work\n");e.printStackTrace();}
 	    }
@@ -1768,7 +1766,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("<div"));
 	    			listCH.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Xinhau",Story.getAuthorXIN()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksXIN no work\n");}
 	    }
@@ -1787,7 +1785,7 @@ public class FileCreate {
 	    			html=html.substring(html.indexOf(">")+1);
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("<[^>]*>","").trim();
 	    			listCH.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"China Daily",Story.getAuthorCHD(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksCHD no work\n");}
 	    }
@@ -1803,7 +1801,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a")).replaceAll("&#8217;","'");
 	    			html=html.substring(html.indexOf("</article"));
 	    			listCH.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"The China Times",Story.getAuthorTCT()));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksTCT no work\n");}
 	    }
@@ -1819,7 +1817,7 @@ public class FileCreate {
 	    			html=html.substring(html.indexOf(">")+1);
 	    			String title=html.substring(0,html.indexOf("</"));
 	    			listCH.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Shine",Story.getAuthorShine(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksShine no work\n");}
 	    }
@@ -1836,7 +1834,7 @@ public class FileCreate {
 	    			String title=html.substring(0,html.indexOf("</a"));
 	    			html=html.substring(html.indexOf("</article"));
 	    			listCH.add(title);
-	    			links.put(title,uri);
+	    			stories.put(title,new Story(title,uri,"Sampan",Story.getAuthorSAM(collectHTML(uri))));
 	    		}
 	    	}catch(Exception e){Main.debug.append("addLinksSAM no work\n");}
 	    }
