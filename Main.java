@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.lang.Thread;
+import java.lang.String;
 public class Main{
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args)throws Exception{
@@ -21,9 +22,9 @@ public class Main{
 	/*Creates the info.txt file in the same directory
 	   *CHANGE TO HTML WHEN PUTTING IN ECLIPSE
 	   */
+	protected static File info=new File("info.html");
 	public static void create(){
 	     try{
-	       File info=new File("info.html");
 	       info.createNewFile();
 	     }catch(IOException e){debug.append("no work create\n");}
 	   }
@@ -32,10 +33,9 @@ public class Main{
 	    */
 	public static void writeTo(String html){
 	     try{
+	       html="<!DOCTYPE html>\n<html>\n<body>\n"+html+"</body>\n</html>";
 	       FileWriter fl=new FileWriter("info.html");
-	       StringBuilder x=new StringBuilder(html);
-	       //listUS.forEach(n->{x.append(links.get(n)+"\n");});
-	       fl.write(x.toString());
+	       fl.write(html);
 	       fl.close();
 	     }catch(IOException e){debug.append("no work writeTo\n");}
 	   }
